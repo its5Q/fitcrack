@@ -1,6 +1,6 @@
 // This file is part of BOINC.
 // http://boinc.berkeley.edu
-// Copyright (C) 2008 University of California
+// Copyright (C) 2019 University of California
 //
 // BOINC is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License
@@ -20,7 +20,6 @@
 #include <cstring>
 #include <cstdlib>
 #include <mysql.h>
-#include <stdbool.h>
 
 #include "error_numbers.h"
 #include "str_util.h"
@@ -30,11 +29,6 @@
 #ifdef _USING_FCGI_
 #include "fcgi_stdio.h"
 #include "sched_msgs.h"
-#endif
-
-#if !defined(MARIADB_BASE_VERSION) && !defined(MARIADB_VERSION_ID) && \
-  MYSQL_VERSION_ID >= 80001 && MYSQL_VERSION_ID != 80002
-typedef bool my_bool;
 #endif
 
 bool g_print_queries = false;
@@ -73,7 +67,7 @@ int DB_CONN::open(
     }
 
     if (set_opt_before) {
-        my_bool mbReconnect = 1;
+        bool mbReconnect = 1;
         mysql_options(mysql, MYSQL_OPT_RECONNECT, &mbReconnect);
     }
 
@@ -91,13 +85,17 @@ int DB_CONN::open(
     // CLIENT_FOUND_ROWS means that the # of affected rows for an update
     // is the # matched by the where, rather than the # actually changed
     //
-    mysql = mysql_real_connect(
+    MYSQL* mysql2 = mysql_real_connect(
         mysql, host, db_user, dbpassword, db_name, port, 0, CLIENT_FOUND_ROWS
     );
-    if (mysql == 0) return ERR_DB_CANT_CONNECT;
+    if (mysql2 == 0) {
+        fprintf(stderr, "mysql_real_connect(): %d: %s\n", mysql_errno(mysql), mysql_error(mysql));
+        return ERR_DB_CANT_CONNECT;
+    }
+    mysql = mysql2;
 
     if (set_opt_after) {
-        my_bool mbReconnect = 1;
+        bool mbReconnect = 1;
         mysql_options(mysql, MYSQL_OPT_RECONNECT, &mbReconnect);
     }
     return 0;
@@ -536,5 +534,3 @@ void escape_mysql_like_pattern(const char* in, char* out) {
         *out++ = *in++;
     }
 }
-
-const char *BOINC_RCSID_43d919556b = "$Id$";
