@@ -87,18 +87,6 @@ if [ $DELETE_DB = "y" ]; then
       echo "Original database dropped."
       DROPPED="y"
     fi
-
-    if [ $DROPPED = "y" ]; then
-      echo "Creating an empty database..."
-      mysql -h $DB_HOST -u $DB_USER -e "CREATE DATABASE $DB_NAME;"
-      if [[ $? != 0 ]]; then
-        echo "Error: Unable to create empty database $DB_HOST as user $DB_USER."
-        echo "Try manually as root."
-        exit
-      else
-        echo "Empty database created."
-      fi
-    fi
   fi
 fi
 
