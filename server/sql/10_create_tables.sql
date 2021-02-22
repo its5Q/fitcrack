@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `fc_job` (
   `indexes_verified` bigint(20) unsigned NOT NULL,
   `current_index` bigint(20) unsigned NOT NULL DEFAULT '0',
   `current_index_2` bigint(20) unsigned NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `time` timestamp DEFAULT CURRENT_TIMESTAMP,
   `name` text COLLATE utf8_bin NOT NULL,
   `comment` text COLLATE utf8_bin NOT NULL,
   `time_start` timestamp NULL DEFAULT NULL,
