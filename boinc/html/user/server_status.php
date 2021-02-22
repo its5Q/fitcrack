@@ -453,7 +453,6 @@ function get_job_status() {
 
     $s->cached_time = time();
     $e = set_cached_data(STATUS_PAGE_TTL, serialize($s), "job_status");
-    if ($e) echo "set_cached_data(): $e\n";
     return $s;
 }
 
