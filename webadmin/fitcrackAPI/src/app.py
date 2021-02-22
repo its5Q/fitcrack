@@ -55,8 +55,6 @@ def configure_app(flask_app):
     flask_app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
     flask_app.config['RESTPLUS_MASK_SWAGGER'] = settings.RESTPLUS_MASK_SWAGGER
     flask_app.config['ERROR_404_HELP'] = settings.RESTPLUS_ERROR_404_HELP
-    flask_app.config['SESSION_COOKIE_SAMESITE'] = None
-    flask_app.config['SESSION_COOKIE_SECURE'] = True
     # flask_app.config['DEBUG'] = True
 
 def set_cookie(response, *args, **kwargs):
@@ -123,9 +121,9 @@ def check_valid_login():
 
 @app.after_request
 def bake_cookies(response):
-    "just a workaround"
+    # just a workaround
     if (response.headers.get('Set-Cookie')):
-        response.headers['Set-Cookie'] += '; SameSite=None; Secure; HttpOnly'
+        response.headers['Set-Cookie'] += '; HttpOnly'
     return response
 
 
